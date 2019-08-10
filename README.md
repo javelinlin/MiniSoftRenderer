@@ -8,3 +8,6 @@
  - Simply clip vertex - clip the vertex which out of ndc space\[-1,1\]
  - Facing cull - culling the back/front
  - Rasterizer and FragmentShader
+
+# 另一个功能稍微多一些的渲染器
+https://github.com/javelinlin/3DSoftRenderer
