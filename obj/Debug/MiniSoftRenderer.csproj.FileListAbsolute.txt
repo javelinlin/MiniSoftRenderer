@@ -1,9 +1,0 @@
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\bin\Debug\MiniSoftRenderer.exe
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\bin\Debug\MiniSoftRenderer.pdb
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.Properties.Resources.resources
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.csproj.GenerateResource.cache
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.csproj.CoreCompileInputs.cache
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.exe
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.pdb
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.MainForm.resources
-D:\jave\Work Files\Github\TestSoftRenderer\TestSoftRenderer\TestSoftRenderer\obj\Debug\MiniSoftRenderer.csprojAssemblyReference.cache
