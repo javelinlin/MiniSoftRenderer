@@ -275,6 +275,8 @@ namespace MiniSoftRenderer
         // invCamZ的作用具体看这篇Scratchapixel 2.0的文章：Rasterization: a Practical Implementation
         // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/perspective-correct-interpolation-vertex-attributes
         // 它的方式与这个稍微有些不一样，还加上了一个：barycentric质点坐标来求插值
+        // - 推导参考：
+        // https://blog.csdn.net/stalendp/article/details/50775450
         // - 使用方式参考：
         // 还有这篇：YzlCoder的博客：【SoftwareRender三部曲】三.流水线
         // https://blog.csdn.net/y1196645376/article/details/78937614
