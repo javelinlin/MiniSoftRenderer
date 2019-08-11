@@ -33,8 +33,8 @@ namespace MiniSoftRenderer
 
                 var v = dc.inUV.y * 100;
                 var times = (int)(v / 10);
-                if (times % 2 == 0) dc.outColor = Vector4.red * dc.inColor;
-                else dc.outColor = Vector4.green * dc.inColor;
+                if (times % 2 == 0) dc.outColor = Vector4.red;
+                else dc.outColor = Vector4.green;
 
                 //dc.outColor = dc.inColor;
                 //dc.outColor = dc.depth;
@@ -183,7 +183,7 @@ namespace MiniSoftRenderer
 
             // ndc pos : Normalized Device Coordinates position，直译为：归一化设备坐标，“设备”两字可去掉，重点就是“归一化”，所以又叫“归一化坐标”
             foreach (var vertex in Vertices)
-            { // perspective divide : 透视除法，出了clipPos坐标，其他fragmentShader的输出参数，需要插值处理的，都处理透视除法
+            { // perspective divide : 透视除法，除了clipPos坐标，其他fragmentShader的输入参数，需要插值处理的，都处理透视除法
                 vertex.invCamZ = 1 / vertex.clipPos.w; // jave.lin : inverse camera z，因为在proj矩阵m[4,3]==-1，然后投影矩阵相乘后，可将camera space下的顶点的z存于clipPos.w中
                 vertex.ndcPos = vertex.clipPos * vertex.invCamZ;
 #if PC
@@ -281,7 +281,7 @@ namespace MiniSoftRenderer
         // - 总结为：
         // 顶点从相机空间变换到投影空间后，再投影在近截面后
         // 顶点的位置之间的关系变得不是线性关系了
-        // 但是顶点的除以CameraSpace下的z值后，数值就变成线性关系的了。
+        // 但是顶点属性除以CameraSpace下的z值后，数值就变成线性关系的了。
         // 这是再去插值即可得到正确结构
     }
     public class BaseShader {
@@ -312,6 +312,14 @@ namespace MiniSoftRenderer
             var cb = renderer.ColorBuffer;
             var fs = renderer.FragmentShader;
             var dx = (int)(right.winPos.x - left.winPos.x);
+            if (dx == 0)
+            {
+                renderer.FragmentShader.dc = left;
+                renderer.FragmentShader.Main();
+                renderer.ColorBuffer[(int)(left.winPos.x), y] = left.outColor;
+                return;
+            }
+            var sx = (int)left.winPos.x;
             for (int i = 0; i < dx; i++)
             {
                 var dc = Lerp(left, right, (float)i / dx);
@@ -322,32 +330,14 @@ namespace MiniSoftRenderer
 #endif
                 renderer.FragmentShader.dc = dc;
                 renderer.FragmentShader.Main();
-                renderer.ColorBuffer[(int)(left.winPos.x + i), (int)left.winPos.y] = dc.outColor;
+                renderer.ColorBuffer[sx + i, y] = dc.outColor;
             }
         }
         // 绘制线，使用向量的方式来画线
         public static void DrawLine(DrawContext f0, DrawContext f1, Renderer renderer)
         {
             var dir = f1.winPos - f0.winPos;
-            var dir_nrl = dir.normalized;
-            int count = 0;
-            // 如果x步幅大，就用x来遍历
-            if (dir_nrl.x != 0 && (Math.Abs(dir_nrl.y) < Math.Abs(dir_nrl.x)))
-            {
-                dir_nrl *= Math.Abs(1 / dir_nrl.x);
-                dir_nrl.x = dir_nrl.x > 0 ? 1 : -1;
-                count = (int)Math.Abs(dir.x);
-            }
-            // 如果y步幅大，就用y来遍历
-            else if (dir_nrl.y != 0)
-            {
-                dir_nrl *= Math.Abs(1 / dir_nrl.y);
-                dir_nrl.y = dir_nrl.y > 0 ? 1 : -1;
-                count = (int)Math.Abs(dir.y);
-            }
-            else if (dir_nrl.z != 0) throw new Exception("error");
-            else throw new Exception("error");
-
+            int count = (int)(Math.Abs(dir.x) > Math.Abs(dir.y) ? Math.Abs(dir.x) : Math.Abs(dir.y));
             var cb = renderer.ColorBuffer;
             var fs = renderer.FragmentShader;
             for (int i = 0; i < count; i++)
@@ -394,14 +384,13 @@ namespace MiniSoftRenderer
                 right = t;
             }
 
-            var sy = (int)left.winPos.y;
-            var dy = (int)(middle.winPos.y - sy);
+            var dy = (int)(middle.winPos.y - (int)left.winPos.y);
             for (int i = 0; i < dy; i++)
             {
                 var t = (float)i / dy;
                 var line_left = Lerp(left, middle, t);
                 var line_right = Lerp(right, middle, t);
-                ScanLine(line_left, line_right, sy + i, renderer);
+                ScanLine(line_left, line_right, (int)line_left.winPos.y, renderer);
             }
         }
         // 平底三角绘制
@@ -418,14 +407,13 @@ namespace MiniSoftRenderer
                 right = t;
             }
 
-            var sy = (int)middle.winPos.y;
-            var dy = (int)(left.winPos.y - sy);
+            var dy = (int)(left.winPos.y - (int)middle.winPos.y);
             for (int i = 0; i < dy; i++)
             {
                 var t = (float)i / dy;
                 var line_left = Lerp(left, middle, t);
                 var line_right = Lerp(right, middle, t);
-                ScanLine(line_left, line_right, sy + i, renderer);
+                ScanLine(line_left, line_right, (int)line_left.winPos.y, renderer);
             }
         }
         // 绘制三角形
